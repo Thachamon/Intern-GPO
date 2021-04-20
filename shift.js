@@ -31,7 +31,7 @@ const argvStep = argvInput[2];
 
 // Validate input
 function check_argvArray(argvArray){
-    return /[!@#$%^&*_+:;"'<>?]/.test(argvArray);
+    return /[!@#$%^&*_+:;"'<>?-=]/.test(argvArray);
 }
 if (check_argvArray(argvArray) === true){
     console.log("Error!! Input Array is not true");
