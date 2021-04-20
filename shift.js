@@ -4,6 +4,7 @@
  * @param {*} inputDirection 
  * @param {*} inputStep 
  */
+
 function shift(inputArray , inputDirection, inputStep) {
     let tmp;
 
@@ -29,10 +30,18 @@ const argvDirection = argvInput[1];
 const argvStep = argvInput[2];
 
 // Validate input
-if (argvDirection != 'left' || argvDirection != 'right'){
-    console.log("Error at Direction");
+function check_argvArray(inputArray){
+    return /^[A-Za-z0-9,]$/.test(inputArray);
 }
-if (argvStep )
+if (check_argvArray(inputArray) === false){
+    console.log("Error!! Input Array is not true");
+}
+if (inputDirection !== 'left' || inputDirection !== 'right'){
+    console.log("Error!! Direction must be 'left' or 'right'");
+}
+if (typeof inputStep !== 'integer'){
+    console.log("Error!! Step must be a number!");
+}
 
 // Convert string to array
 const convertArray = argvArray.split(',')
