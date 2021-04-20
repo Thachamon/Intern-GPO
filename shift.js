@@ -30,20 +30,21 @@ const argvDirection = argvInput[1];
 const argvStep = argvInput[2];
 
 // Validate input
-// Validate input
 function check_argvArray(argvArray){
-    return /^[A-Za-z0-9,]$/.test(argvArray);
+    return /[!@#$%^&*_+:;"'<>?]/.test(argvArray);
 }
-if (check_argvArray(argvArray) === false){
+if (check_argvArray(argvArray) === true){
     console.log("Error!! Input Array is not true");
 }
-if (argvDirection !== "left" || argvDirection !== "right"){
+if (argvDirection !== 'right' && argvDirection !== 'left'){
     console.log("Error!! Direction must be 'left' or 'right'");
 }
-
-if (parseInt(argvStep) === NaN){
+if (isNaN(parseInt(argvStep))){
     console.log("Error!! Step must be a number!");
 }
+
+console.log(check_argvArray(argvArray));
+//console.log(argvDirection);
 
 // Convert string to array
 const convertArray = argvArray.split(',')
