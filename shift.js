@@ -43,9 +43,6 @@ if (isNaN(parseInt(argvStep))){
     console.log("Error!! Step must be a number!");
 }
 
-console.log(check_argvArray(argvArray));
-//console.log(argvDirection);
-
 // Convert string to array
 const convertArray = argvArray.split(',')
 
