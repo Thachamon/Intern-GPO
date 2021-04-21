@@ -1,7 +1,9 @@
 function findMissing (inputArray){
+    //sort the array
+    inputArray.sort(function(a, b){return a-b});
+
     var lengthArr = inputArray.length;
     var diff = inputArray[0] - 0;
-
     for(let i = 0; i < lengthArr; i++){
         if(inputArray[i] - i != diff){
             while(diff < inputArray[i]-i){
@@ -28,3 +30,4 @@ const convertArray = argvArray.split(',')
 var MissingNumb = [];
 
 findMissing(convertArray);
+console.log(convertArray);  //show sorted array
