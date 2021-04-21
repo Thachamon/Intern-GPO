@@ -12,10 +12,11 @@ function findMissing (inputArray){
             }
         } 
     } 
+    console.log(MissingNumb);
 }
 
-var inputArray = [1, 2, 5, 9, 11];
-var MissingNumb = [];
+const argvArray = process.argv[2];
+const convertArray = argvArray.split(',')
 
-findMissing(inputArray);
-console.log(MissingNumb);
+var MissingNumb = [];
+findMissing(convertArray);
