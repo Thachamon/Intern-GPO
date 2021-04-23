@@ -1,24 +1,28 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const app = express()
+const app2 = express()
+
 
 // body parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app2.use(bodyParser.json());
+app2.use(bodyParser.urlencoded({ extended: true }));
+
+// serve static
+app2.use('/static', express.static('public'));
 
 // GET method route
-app.get('/',function (req, res){
-    res.send('Hello Express')
+app2.get('',function (req, res){
+    res.sendFile(__dirname+"/index.html")
 })
 
 //POST method
-app.post('/api/shift', function (req, res) {
+app2.post('/', function (req, res) {
     let inputArray = req.body.array;
     let inputDirection = req.body.direction;
-    let inputStep = req.body.step;
+    let inputStep = Number(req.body.step);
     let tmp;
 
-    // Convert string to array
+    // // Convert string to array
     const convertArray = inputArray.split(',')
     
     if (inputDirection === 'left') {
@@ -32,10 +36,9 @@ app.post('/api/shift', function (req, res) {
             convertArray.unshift(tmp);
         }
     }
-    // console.log(inputArray);
 
-    //let result = req.body.inputArray + req.body.inputDirection + req.body.inputStep;
-    res.send(convertArray)
+
+    res.send('Result of shift array is : '+convertArray)
 });
 
-app.listen(3000)
+app2.listen(3000)
