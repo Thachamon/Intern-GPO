@@ -1,4 +1,5 @@
 FROM node:alpine
+FROM postgres
 
 WORKDIR /app
 

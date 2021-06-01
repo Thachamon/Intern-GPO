@@ -12,7 +12,7 @@ app2.use('/static', express.static('public'));
 
 // GET method route
 app2.get('',function (req, res){
-    res.sendFile(__dirname+"/index.html")
+    res.sendFile(__dirname+"/index2.html")
 })
 
 //POST method
