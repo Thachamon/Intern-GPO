@@ -23,7 +23,11 @@
         -->
     <!-- v-on -->
         <p>{{ message }}</p>
-        <button v-on:click="hello">Click me please!</button>
+        <!--
+            <button v-on:click="hello">Click me please!</button>
+        -->
+        <button @click="hello">Click me please!</button>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
