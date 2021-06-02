@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset="UTF-8">
+        <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="/static/css/style.css">
+        <title>Shift Array</title>
+    </head>
+    <body>
+        
+        <form method="POST" action="/api">
+            <h1>..Simple Shift Array..</h1>
+
+            <div class="custom-field">
+                <label>First Name</label>
+                <input type="text"  name="fname" placeholder="ex.Winai">
+            </div>
+
+            <div class="custom-field">
+                <label>Last Name</label>
+                <input type="text"  name="lname" placeholder="ex.Jaidee">
+            </div>
+
+            <div class="custom-field">
+                <label>E-mail</label>
+                <input type="email"  name="email" placeholder="ex.xxxx@gmail.com">
+            </div>
+
+            <div class="custom-field">
+                <label for="gender">Select your gender : </label>
+                <select name="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="custom-field">
+                <label>Date of Birth</label>
+                <input type="date"  class="form__input" name="birth" placeholder="ex.01/01/1996">
+            </div>
+
+            <div class="custom-field">
+                <label>Username</label>
+                <input type="text"  class="form__input" name="username" placeholder="ex.winai007">
+            </div>
+
+            <div class="custom-field">
+                <label>Password</label>
+                <input type="password"  class="form__input" name="pwd" minlength="8" placeholder="ex.12345678">
+            </div>
+
+            <div class="custom-button">
+                <input type="submit" value="Register">  
+            </div>
+            
+        </form>
+    </body>
+</html>
