@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const app4 = express()
 const users = require('./Users');
 
+const router = express.Router()
 //Users.insertSignList();
 //users.selectSignList();
 
@@ -35,11 +36,16 @@ app4.post('/vueRegis', async (req,res) =>{
     const username = req.body.username;
     const password = req.body.password;
 
-    users.insertSignList(fname, lname, email, gender, username, password, birth);
-
-    res.send('successful!!');
+    try {
+        users.insertSignList(fname, lname, email, gender, username, password, birth);
+        res.send('success!');
+    } catch (error) {
+        res.send(error);
+    }
     //return res.json({});
 
 });
+
+//router.post('/Users', controller.users.insertSignList)
 
 app4.listen(8000);
