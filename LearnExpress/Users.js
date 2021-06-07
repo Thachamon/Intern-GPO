@@ -1,7 +1,8 @@
 require('dotenv').config()
-const { Client } = require('pg')
+//const { Client } = require('pg')
+const { Pool } = require('pg')
 
-const client = new Client({
+const pool = new Pool({
   user: process.env.POSTGRES_USER,
   host: process.env.POSTGRES_HOST,
   database: process.env.POSTGRES_DB,
@@ -15,29 +16,36 @@ module.exports = {
 }
 
 function selectSignList() {
-    client.connect();
-    client.query('SELECT * FROM signlist', (err, res) => {
+    pool.connect((err, client, release) => {
+      //const client = await pool.connect();
+        client.query('SELECT * FROM signlist', (err, res) => {
         console.log(res.rows) 
-        client.end() 
+        //client.end() 
+      })
     })
 }
 
 async function insertSignList(fname, lname, email,  gender, username, password, birthday) {
-    await client.connect();
-    /**
-     * TODO
-     */
-    //const { detial } = req.body;
+    //await client.connect();
+
     const query = 'INSERT INTO signlist (fname, lname, email, gender,  username, password, birthday) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+
+
     const value = [fname, lname, email, gender, username, password, birthday];
 
-    await client.query(query, value, (err, res) =>{
-        if (err) {
-            console.log(err);
-            return;
-        }
-        client.end();
-    })
-
-
+    try {
+        pool.connect((err, client, release) => {
+          client.query(query, value);
+        });
+    } catch (e) {
+        console.error('Error Occurred', e);
+        throw e;
+    }
+    
+    // await client.query(query, value, (err, res) => {
+    //     if (err) {
+    //       return err.message;
+    //     }
+    //     return done(); 
+    //   })
 }
