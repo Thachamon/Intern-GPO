@@ -1,51 +1,55 @@
-require('dotenv').config()
-//const { Client } = require('pg')
-const { Pool } = require('pg')
+require('dotenv').config();
+const { Pool } = require('pg');
+const { expressValidator, Result } = require('express-validator');
+const { resolveConfig } = require('prettier');
 
 const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT,
+    user: process.env.POSTGRES_USER,
+    host: process.env.POSTGRES_HOST,
+    database: process.env.POSTGRES_DB,
+    password: process.env.POSTGRES_PASSWORD,
+    port: process.env.POSTGRES_PORT,
 });
 
 module.exports = {
     selectSignList,
     insertSignList,
-}
+    selectList,
+};
 
 function selectSignList() {
     pool.connect((err, client, release) => {
-      //const client = await pool.connect();
-        client.query('SELECT * FROM signlist', (err, res) => {
-        console.log(res.rows) 
-        //client.end() 
-      })
-    })
+        client.query('SELECT fname, lname, email, gender,  username, password, birthday FROM signlist', (err, res) => {
+            console.log(res.rows);
+        });
+    });
 }
 
-async function insertSignList(fname, lname, email,  gender, username, password, birthday) {
+async function insertSignList(fname, lname, email, gender, username, password, birthday) {
     //await client.connect();
-
-    const query = 'INSERT INTO signlist (fname, lname, email, gender,  username, password, birthday) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
-
-
     const value = [fname, lname, email, gender, username, password, birthday];
+
+    const query =
+        'INSERT INTO signlist (fname, lname, email, gender,  username, password, birthday) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
 
     try {
         pool.connect((err, client, release) => {
-          client.query(query, value);
+            client.query(query, value);
         });
     } catch (e) {
         console.error('Error Occurred', e);
         throw e;
     }
-    
-    // await client.query(query, value, (err, res) => {
-    //     if (err) {
-    //       return err.message;
-    //     }
-    //     return done(); 
-    //   })
+}
+
+function selectList(callback) {
+    pool.connect((err, client, release) => {
+        client.query('SELECT fname, lname, email, gender,  username, password, birthday FROM signlist', (err, res) => {
+            if (err) {
+                console.error(err.stack);
+            } else {
+                callback(res.rows);
+            }
+        });
+    });
 }
