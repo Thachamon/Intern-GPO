@@ -6,7 +6,7 @@
         "node": true,
         "mocha": true
     },
-    "extends": ["standard", "prettier", "plugin:prettier/recommended"],
+    "extends": ["plugin:vue/base"],
     "plugins": ["prettier"],
     "globals": {
         "Atomics": "readonly",
