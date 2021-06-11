@@ -3,7 +3,7 @@
         <v-app>
             <v-app-bar app color="teal accent-4" dark>
                 <v-icon large color="purple">mdi-pig</v-icon>
-                <div style="font-size: 1.5em">Register Account</div>
+                <div style="font-size: 1.5em">Register Account Test</div>
                 <v-spacer></v-spacer>
             </v-app-bar>
 
