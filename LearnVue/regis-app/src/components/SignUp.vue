@@ -6,18 +6,54 @@
                     <span v-html="errMessage"></span>
                 </v-alert>
 
-                <v-tabs v-model="tab" show-arrows background-color="blue accent-4" icons-and-text dark grow>
-                    <v-tabs-slider color="blue darken-4"></v-tabs-slider>
+                <v-tabs v-model="tab" show-arrows background-color="yellow darken-2" icons-and-text dark grow>
+                    <v-tabs-slider color="yellow lighten-2"></v-tabs-slider>
                     <v-tab v-for="i in tabs" :key="i">
                         <v-icon large>{{ i.icon }}</v-icon>
                         <div class="caption py-1">{{ i.name }}</div>
                     </v-tab>
 
                     <v-tab-item>
+                        <v-form ref="loginForm" v-model="valid" :lazy-validation="lazy">
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-text-field
+                                        v-model="login.loginUsername"
+                                        :rules="[rules.required]"
+                                        label="Username"
+                                        required
+                                    ></v-text-field>
+                                </v-col>
+
+                                <v-col cols="12">
+                                    <v-text-field
+                                        v-model="login.loginPassword"
+                                        name="loginPassword"
+                                        label="Password"
+                                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                        :rules="[rules.required, rules.min]"
+                                        :type="show1 ? 'text' : 'loginPassword'"
+                                        hint="At least 8 characters"
+                                        counter
+                                        @click:append="show1 = !show1"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col class="d-flex" cols="12" sm="6" xsm="12"></v-col>
+                                <v-spacer></v-spacer>
+                                <v-col class="d-flex" cols="12" sm="3" xsm="12" align-end>
+                                    <v-btn x-large block :disabled="!valid" color="success" @click="validate">
+                                        Login
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-tab-item>
+
+                    <v-tab-item>
                         <v-form ref="registerForm" v-model="valid" :lazy-validation="lazy">
                             <v-layout column>
                                 <v-row>
-                                    <v-col cols="12" sm="6" md="4">
+                                    <v-col>
                                         <v-flex>
                                             <v-text-field
                                                 v-model="form.fname"
@@ -32,7 +68,7 @@
                                         </v-flex>
                                     </v-col>
 
-                                    <v-col cols="12" sm="6" md="4">
+                                    <v-col>
                                         <v-flex>
                                             <v-text-field
                                                 v-model="form.lname"
@@ -139,13 +175,20 @@
                         </v-dialog>
                     </v-tab-item>
 
-                    <v-tab-item v-on:click="resultForm">
+                    <v-tab-item>
                         <v-card>
                             <v-card-title>
                                 Registered Users
                                 <v-spacer></v-spacer>
+                                <v-text-field
+                                    v-model="search"
+                                    append-icon="mdi-magnify"
+                                    label="Search"
+                                    single-line
+                                    hide-details
+                                ></v-text-field>
                             </v-card-title>
-                            <v-data-table :headers="headers" :items="dataTable"></v-data-table>
+                            <v-data-table :headers="headers" :items="dataTable" :search="search"></v-data-table>
                         </v-card>
                     </v-tab-item>
                 </v-tabs>
@@ -167,6 +210,7 @@ export default {
         dialog: true,
         tab: 0,
         tabs: [
+            { name: 'Login', icon: 'mdi-account' },
             { name: 'Register', icon: 'mdi-account-outline' },
             { name: 'Report', icon: 'mdi-folder-open' },
         ],
@@ -191,42 +235,46 @@ export default {
         dialog: false,
         alert: false,
         errMessage: '',
-        usrData: '',
 
-        return: {
-            headers: [
-                {
-                    text: 'Firstname',
-                    align: 'start',
-                    filterable: false,
-                    value: 'fname',
-                },
-                {
-                    text: 'Lastname',
-                    value: 'lname',
-                },
-                {
-                    text: 'Email',
-                    value: 'email',
-                },
-                {
-                    text: 'Gender',
-                    value: 'gender',
-                },
-                {
-                    text: 'Username',
-                    value: 'username',
-                },
-                {
-                    text: 'Password',
-                    value: 'password',
-                },
-                {
-                    text: 'Birthday',
-                    value: 'birthday',
-                },
-            ],
-            dataTable: [],
+        headers: [
+            {
+                text: 'Firstname',
+                align: 'start',
+                filterable: false,
+                value: 'fname',
+            },
+            {
+                text: 'Lastname',
+                value: 'lname',
+            },
+            {
+                text: 'Email',
+                value: 'email',
+            },
+            {
+                text: 'Gender',
+                value: 'gender',
+            },
+            {
+                text: 'Username',
+                value: 'username',
+            },
+            {
+                text: 'Password',
+                value: 'password',
+            },
+            {
+                text: 'Birthday',
+                value: 'birthday',
+            },
+        ],
+        dataTable: '',
+
+        search: '',
+
+        login: {
+            loginUsername: '',
+            loginPassword: '',
         },
     }),
 
@@ -251,6 +299,7 @@ export default {
                 .then(function () {
                     parent.dialog = true
                     parent.$refs.registerForm.reset()
+                    parent.resultForm()
                 })
                 .catch(function (error) {
                     let err = error.response.data
@@ -270,12 +319,35 @@ export default {
         },
 
         resultForm() {
-            this.axios.get('http://localhost:8000/viewRegister').then((response) => {
-                //console.log('test')
-                console.log('response: ', response)
-                // do something about response
-            })
+            let parent = this
+            this.axios
+                .get('http://localhost:8000/viewRegister')
+                .then((response) => {
+                    return (parent.dataTable = response.data)
+                    //console.log(parent.dataTable)
+                })
+                .catch((err) => {})
         },
+
+        validate() {
+            let parent = this
+            this.axios
+                .post('http://localhost:8000/login', {
+                    username: this.login.loginUsername,
+                    password: this.login.loginPassword,
+                })
+                .then(function () {
+                    //redirect('/about')
+                    //     function (response) {
+                    //     //parent.$refs.login.validate()
+                    //     console.log(response)
+                    // }
+                })
+        },
+    },
+    async beforeMount() {
+        await this.resultForm()
+        console.log('dtatable = ', this.dataTable)
     },
 }
 </script>

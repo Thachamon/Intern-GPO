@@ -6,6 +6,9 @@ const cors = require('cors'); //CORS
 const bodyParser = require('body-parser');
 const { check, validationResult } = require('express-validator');
 const urlencodedPaser = bodyParser.urlencoded({ extended: false });
+var session = require('express-session');
+const { Connection } = require('pg');
+const { response } = require('express');
 
 // serve static
 app4.use(express.static('public'));
@@ -13,6 +16,13 @@ app4.use(express.json());
 app4.use(cors());
 app4.use(bodyParser.json());
 app4.use(bodyParser.urlencoded({ extended: true }));
+app4.use(
+    session({
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true,
+    })
+);
 
 // GET method route
 app4.get('/', (req, res) => {
@@ -60,23 +70,53 @@ app4.post(
         if (!errors.isEmpty()) {
             console.log(errors);
             res.status(422).send({ errors: errors.array() });
-        }
-
-        try {
-            await users.insertSignList(fname, lname, email, gender, username, password, birthday);
-            res.status(200).send({ result: 'Successfully' });
-        } catch (e) {
-            res.status(400).send({ result: e.message });
+        } else {
+            try {
+                await users.insertSignList(fname, lname, email, gender, username, password, birthday);
+                res.status(200).send({ result: 'Successfully' });
+            } catch (e) {
+                res.status(400).send({ result: e.message });
+            }
         }
     }
 );
 
-app4.get('/viewRegister', cors(), async (req, res) => {
+app4.get('/viewRegister', cors(), (req, res) => {
     users.selectList(function (result) {
         res.send(result);
     });
     //console.log(users.selectList());
     // res.send(users.selectList());
+});
+
+app4.post('/login', cors(), (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    if (username && password) {
+        users.userLogin(username, password, function (results) {
+            if (results.length > 0) {
+                req.session.loggedin = true;
+                req.session.username = username;
+                res.status(200).send({ result: 'success' });
+                //res.send('success');
+                // res.redirect('/home');
+            } else {
+                res.status(400).send({ result: 'Incorrect Username and/or Password!' });
+                //res.send('Incorrect Username and/or Password!');
+            }
+        });
+    } else {
+        res.send('Please enter Username and Password!');
+    }
+});
+
+app4.get('/home', function (req, res) {
+    if (req.session.loggedin) {
+        res.send('Welcome back, ' + req.session.username + '!');
+    } else {
+        res.send('Please login to view this page!');
+    }
 });
 
 app4.listen(8000);

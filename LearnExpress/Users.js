@@ -15,6 +15,7 @@ module.exports = {
     selectSignList,
     insertSignList,
     selectList,
+    userLogin,
 };
 
 function selectSignList() {
@@ -25,7 +26,7 @@ function selectSignList() {
     });
 }
 
-async function insertSignList(fname, lname, email, gender, username, password, birthday) {
+function insertSignList(fname, lname, email, gender, username, password, birthday) {
     //await client.connect();
     const value = [fname, lname, email, gender, username, password, birthday];
 
@@ -51,5 +52,21 @@ function selectList(callback) {
                 callback(res.rows);
             }
         });
+    });
+}
+
+function userLogin(username, password, callback) {
+    pool.connect((err, client, release) => {
+        client.query(
+            'SELECT username, password FROM signlist WHERE username = $1 AND password = $2',
+            [username, password],
+            (err, res) => {
+                if (err) {
+                    console.error(err.stack);
+                } else {
+                    callback(res.rows);
+                }
+            }
+        );
     });
 }
