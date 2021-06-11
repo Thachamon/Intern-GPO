@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div class="register">
         <v-app>
             <v-app-bar app color="brown darken-1" dark>
                 <v-icon large color="orange accent-1">mdi-skull</v-icon>
@@ -15,17 +15,14 @@
 </template>
 
 <script>
-//import HelloWorld from './components/HelloWorld';
-import SignUp from './components/SignUp'
+
+import SignUp from '@/components/SignUp.vue'
 
 export default {
-    name: 'App',
+    name: 'Register',
 
     components: {
-        //HelloWorld,
         SignUp,
     },
-
-    data: () => ({}),
 }
 </script>
